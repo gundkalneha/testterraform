@@ -97,7 +97,6 @@ resource "aws_eip" "nat_gw_eip_1" {
 resource "aws_eip" "nat_gw_eip_2" {
   vpc = true
 }
-z
 
 resource "aws_nat_gateway" "gw_1" {
   allocation_id = aws_eip.nat_gw_eip_1.id
