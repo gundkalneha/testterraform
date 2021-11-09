@@ -29,17 +29,6 @@ resource "aws_subnet" "public_2" {
   }
 }
 
-resource "aws_subnet" "public_3" {
-  vpc_id     = aws_vpc.demo.id
-  cidr_block = cidrsubnet(aws_vpc.demo.cidr_block, 8, 2)
-  availability_zone = data.aws_availability_zones.available.names[2]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "${local.common_prefix}-public-subnet-${data.aws_availability_zones.available.names[2]}"
-  }
-}
-
 resource "aws_internet_gateway" "demo" {
   vpc_id = aws_vpc.demo.id
 
@@ -68,11 +57,6 @@ resource "aws_route_table_association" "public_1" {
 
 resource "aws_route_table_association" "public_2" {
     subnet_id = aws_subnet.public_2.id
-    route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "public_3" {
-    subnet_id = aws_subnet.public_3.id
     route_table_id = aws_route_table.public.id
 }
 
@@ -113,10 +97,7 @@ resource "aws_eip" "nat_gw_eip_1" {
 resource "aws_eip" "nat_gw_eip_2" {
   vpc = true
 }
-
-resource "aws_eip" "nat_gw_eip_3" {
-  vpc = true
-}
+z
 
 resource "aws_nat_gateway" "gw_1" {
   allocation_id = aws_eip.nat_gw_eip_1.id
@@ -126,11 +107,6 @@ resource "aws_nat_gateway" "gw_1" {
 resource "aws_nat_gateway" "gw_2" {
   allocation_id = aws_eip.nat_gw_eip_2.id
   subnet_id     = aws_subnet.public_2.id
-}
-
-resource "aws_nat_gateway" "gw_3" {
-  allocation_id = aws_eip.nat_gw_eip_3.id
-  subnet_id     = aws_subnet.public_3.id
 }
 
 resource "aws_route_table" "nated_1" {
@@ -156,19 +132,6 @@ resource "aws_route_table" "nated_2" {
 
     tags = {
         Name = "${local.common_prefix}-nated-rt-2"
-    }
-}
-
-resource "aws_route_table" "nated_3" {
-    vpc_id = aws_vpc.demo.id
-
-    route {
-        cidr_block = "0.0.0.0/0"
-        nat_gateway_id = aws_nat_gateway.gw_3.id
-    }
-
-    tags = {
-        Name = "${local.common_prefix}-nated-rt-3"
     }
 }
 
