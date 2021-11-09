@@ -69,8 +69,7 @@ resource "aws_elasticsearch_domain" "example" {
   vpc_options {
       subnet_ids = [
         aws_subnet.nated_1.id,
-        aws_subnet.nated_2.id,
-        aws_subnet.nated_3.id
+        aws_subnet.nated_2.id
       ]
 
       security_group_ids = [
